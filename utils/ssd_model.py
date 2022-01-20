@@ -39,7 +39,7 @@ def make_datapath_list_ibem(rootpath):
 
     Returns
     -------
-    ret : train_img_list, train_anno_list, val_img_list, val_anno_list
+    ret : valid_img_list, valid_anno_list
         データへのパスを格納したリスト
     """
 
@@ -153,12 +153,12 @@ class DataTransform():
         self.data_transform = {
             'train': Compose([
                 ConvertFromInts(),  # intをfloat32に変換
-                #ToAbsoluteCoords(),  # アノテーションデータの規格化を戻す
+                ToAbsoluteCoords(),  # アノテーションデータの規格化を戻す
                 #PhotometricDistort(),  # 画像の色調などをランダムに変化
                 #Expand(color_mean),  # 画像のキャンバスを広げる
                 #RandomSampleCrop(),  # 画像内の部分をランダムに抜き出す
                 #RandomMirror(),  # 画像を反転させる
-                #ToPercentCoords(),  # アノテーションデータを0-1に規格化
+                ToPercentCoords(),  # アノテーションデータを0-1に規格化
                 Resize(input_size),  # 画像サイズをinput_size×input_sizeに変形
                 SubtractMeans(color_mean)  # BGRの色の平均値を引き算
             ]),
@@ -179,9 +179,9 @@ class DataTransform():
         return self.data_transform[phase](img, boxes, labels)
 
 
-class VOCDataset(data.Dataset):
+class IBEMDataset(data.Dataset):
     """
-    VOC2012のDatasetを作成するクラス。PyTorchのDatasetクラスを継承。
+    IBEMDatasetのDatasetを作成するクラス。PyTorchのDatasetクラスを継承。
 
     Attributes
     ----------
